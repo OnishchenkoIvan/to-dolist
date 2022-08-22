@@ -18,8 +18,6 @@ function App() {
       <TodoList title={todoListTitle_1}
       tasks={tasks_1}
       />
-      <TodoList title={todoListTitle_2}
-      tasks={tasks_2}/>
     </div>
   );
 }
