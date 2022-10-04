@@ -3,6 +3,8 @@ import "./App.css";
 import TodoList, { TaskType } from "./TodoList";
 import { v1 } from "uuid";
 import { Input } from "./components/Input";
+import { ButtonAppBar } from "./components/ButtonAppBar";
+import { Container, Grid, Paper } from "@mui/material";
 // CLI
 // GUI => CRUD
 // C+
@@ -134,27 +136,38 @@ function App() {
   const todoListsComponents = todoLists.map((tl) => {
     const tasksForTodoList = getTasksForTodoList(tl.filter, tasks[tl.id]);
     return (
-      <TodoList
-        key={tl.id}
-        todoListId={tl.id}
-        filter={tl.filter}
-        title={tl.title}
-        tasks={tasksForTodoList}
-        removeTask={removeTask}
-        changeFilter={changeFilter}
-        addTask={addTask}
-        changeStatus={changeStatus}
-        removeTodoList={removeTodoList}
-        changeTask={changeTask}
-        editTodoList={editTodoList}
-      />
+      <Grid item>
+        <Paper style={{ padding: "10px" }}>
+          <TodoList
+            key={tl.id}
+            todoListId={tl.id}
+            filter={tl.filter}
+            title={tl.title}
+            tasks={tasksForTodoList}
+            removeTask={removeTask}
+            changeFilter={changeFilter}
+            addTask={addTask}
+            changeStatus={changeStatus}
+            removeTodoList={removeTodoList}
+            changeTask={changeTask}
+            editTodoList={editTodoList}
+          />
+        </Paper>
+      </Grid>
     );
   });
 
   return (
     <div className="App">
-      <Input callBack={addTodolist} />
-      {todoListsComponents}
+      <ButtonAppBar />
+      <Container fixed>
+        <Grid container style={{ padding: "20px" }}>
+          <Input callBack={addTodolist} />
+        </Grid>
+        <Grid container spacing={3}>
+          {todoListsComponents}
+        </Grid>
+      </Container>
     </div>
   );
 }

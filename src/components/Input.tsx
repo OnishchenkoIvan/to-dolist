@@ -1,3 +1,4 @@
+import { Button, TextField } from "@mui/material";
 import React, { ChangeEvent, KeyboardEvent, useState } from "react";
 
 type InputPropsType = {
@@ -32,13 +33,29 @@ export const Input = (props: InputPropsType) => {
   );
   return (
     <div>
-      <input
-        className={error ? "error" : ""}
+      <TextField
+        error={error}
+        id="outlined-basic"
+        label={error ? "Enter your task" : "type in"}
+        variant="outlined"
+        size={"small"}
         value={title}
         onChange={changeTitle}
         onKeyDown={onKeyDownAddTask}
       />
-      <button onClick={addTask}>+</button>
+      <Button
+        variant={"contained"}
+        onClick={addTask}
+        style={{
+          maxWidth: "40px",
+          maxHeight: "40px",
+          minWidth: "40px",
+          minHeight: "40px",
+          backgroundColor: "black",
+        }}
+      >
+        +
+      </Button>
       {userMessage}
     </div>
   );
