@@ -13,12 +13,12 @@ import { Container, Grid, Paper } from "@mui/material";
 // D+
 
 export type FilterValuesType = "all" | "active" | "completed";
-type TodoListType = {
+export type TodoListType = {
   id: string;
   title: string;
   filter: FilterValuesType;
 };
-type TasksStateType = {
+export type TasksStateType = {
   [todoListId: string]: Array<TaskType>;
 };
 
