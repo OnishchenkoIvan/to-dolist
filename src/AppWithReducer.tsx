@@ -1,10 +1,24 @@
-import React, { useState } from "react";
+import React, { useReducer } from "react";
 import "./App.css";
 import TodoList, { TaskType } from "./TodoList";
 import { v1 } from "uuid";
 import { Input } from "./components/Input";
 import { ButtonAppBar } from "./components/ButtonAppBar";
 import { Container, Grid, Paper } from "@mui/material";
+import {
+  addTodolistAC,
+  changeTodolistFilterAC,
+  changeTodolistTitleAC,
+  removeTodolistAC,
+  todolistsReducer,
+} from "./reducers/todolists-reducer";
+import {
+  addTaskAC,
+  changeTaskStatusAC,
+  changeTaskTitleAC,
+  removeTaskAC,
+  tasksReducer,
+} from "./reducers/tasks-reducer";
 
 export type FilterValuesType = "all" | "active" | "completed";
 export type TodoListType = {
@@ -16,16 +30,16 @@ export type TasksStateType = {
   [todoListId: string]: Array<TaskType>;
 };
 
-function App() {
+function AppWithReducer() {
   //BLL:
   const todoListId_1 = v1();
   const todoListId_2 = v1();
 
-  const [todoLists, setTodoLists] = useState<Array<TodoListType>>([
+  const [todoLists, dispatchToTodolist] = useReducer(todolistsReducer, [
     { id: todoListId_1, title: "What to learn today", filter: "all" },
     { id: todoListId_2, title: "What to buy", filter: "all" },
   ]);
-  const [tasks, setTasks] = useState<TasksStateType>({
+  const [tasks, dispatchToTasks] = useReducer(tasksReducer, {
     [todoListId_1]: [
       { id: v1(), title: "HTML&CSS", isDone: true },
       { id: v1(), title: "JS&TS", isDone: true },
@@ -39,20 +53,11 @@ function App() {
   });
 
   const removeTask = (taskId: string, todoListId: string) => {
-    setTasks({
-      ...tasks,
-      [todoListId]: tasks[todoListId].filter((t) => t.id !== taskId),
-    });
+    dispatchToTasks(removeTaskAC(taskId, todoListId));
   };
 
   const addTask = (title: string, todoListId: string) => {
-    setTasks({
-      ...tasks,
-      [todoListId]: [
-        { id: v1(), title: title, isDone: false },
-        ...tasks[todoListId],
-      ],
-    });
+    dispatchToTasks(addTaskAC(title, todoListId));
   };
 
   const changeStatus = (
@@ -60,24 +65,17 @@ function App() {
     isDone: boolean,
     todoListId: string
   ) => {
-    setTasks({
-      ...tasks,
-      [todoListId]: tasks[todoListId].map((t) =>
-        t.id === taskId ? { ...t, isDone: isDone } : t
-      ),
-    });
+    dispatchToTasks(changeTaskStatusAC(taskId, isDone, todoListId));
   };
 
   const changeFilter = (filter: FilterValuesType, todoListId: string) => {
-    setTodoLists(
-      todoLists.map((tl) =>
-        tl.id === todoListId ? { ...tl, filter: filter } : tl
-      )
-    );
+    dispatchToTodolist(changeTodolistFilterAC(filter, todoListId));
   };
 
   const removeTodoList = (todoListId: string) => {
-    setTodoLists(todoLists.filter((tl) => tl.id !== todoListId));
+    const action = removeTodolistAC(todoListId);
+    dispatchToTodolist(action);
+    dispatchToTasks(action);
   };
 
   //UI:
@@ -96,14 +94,9 @@ function App() {
   };
 
   const addTodolist = (newTitle: string) => {
-    const newTodolistId = v1();
-    const newTodolist: TodoListType = {
-      id: newTodolistId,
-      title: newTitle,
-      filter: "all",
-    };
-    setTodoLists([newTodolist, ...todoLists]);
-    setTasks({ ...tasks, [newTodolistId]: [] });
+    const action = addTodolistAC(newTitle);
+    dispatchToTodolist(action);
+    dispatchToTasks(action);
   };
 
   const changeTask = (
@@ -111,20 +104,11 @@ function App() {
     taskID: string,
     currentTitle: string
   ) => {
-    setTasks({
-      ...tasks,
-      [todoListId]: tasks[todoListId].map((el) =>
-        el.id === taskID ? { ...el, title: currentTitle } : el
-      ),
-    });
+    dispatchToTasks(changeTaskTitleAC(todoListId, taskID, currentTitle));
   };
 
   const editTodoList = (todoListId: string, currentTitle: string) => {
-    setTodoLists(
-      todoLists.map((el) =>
-        el.id === todoListId ? { ...el, title: currentTitle } : el
-      )
-    );
+    dispatchToTodolist(changeTodolistTitleAC(todoListId, currentTitle));
   };
 
   const todoListsComponents = todoLists.map((tl) => {
@@ -166,4 +150,4 @@ function App() {
   );
 }
 
-export default App;
+export default AppWithReducer;

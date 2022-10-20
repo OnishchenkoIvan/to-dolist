@@ -96,7 +96,6 @@ const TodoList = (props: TodoListPropsType) => {
         <Button
           variant={props.filter === "all" ? "outlined" : "contained"}
           color="success"
-          // className={props.filter === "all" ? "btn-active btn" : "btn"}
           onClick={() => props.changeFilter("all", props.todoListId)}
         >
           All
@@ -104,7 +103,6 @@ const TodoList = (props: TodoListPropsType) => {
         <Button
           variant={props.filter === "active" ? "outlined" : "contained"}
           color="error"
-          // className={props.filter === "active" ? "btn-active btn" : "btn"}
           onClick={handlerCreator("active", props.todoListId)}
         >
           Active
@@ -112,7 +110,6 @@ const TodoList = (props: TodoListPropsType) => {
         <Button
           variant={props.filter === "completed" ? "outlined" : "contained"}
           color="secondary"
-          // className={props.filter === "completed" ? "btn-active btn" : "btn"}
           onClick={handlerCreator("completed", props.todoListId)}
         >
           Completed

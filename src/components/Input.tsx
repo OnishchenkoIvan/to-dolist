@@ -1,5 +1,5 @@
-import { Button, TextField } from "@mui/material";
-import React, { ChangeEvent, KeyboardEvent, useState } from "react";
+import {Button, TextField} from "@mui/material";
+import React, {ChangeEvent, KeyboardEvent, useState} from "react";
 
 type InputPropsType = {
   callBack: (trimmedTitle: string) => void;
@@ -18,6 +18,7 @@ export const Input = (props: InputPropsType) => {
     const trimmedTitle = title.trim();
     if (trimmedTitle) {
       props.callBack(trimmedTitle);
+      setTitle('')
     } else {
       setError(true);
     }
@@ -27,7 +28,7 @@ export const Input = (props: InputPropsType) => {
     if (e.key === "Enter") addTask();
   };
   const userMessage = error ? (
-    <div style={{ color: "hotpink" }}>Title is required!</div>
+    <div style={{color: "hotpink"}}>Title is required!</div>
   ) : (
     <div>Please, create list item</div>
   );

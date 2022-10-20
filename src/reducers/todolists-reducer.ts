@@ -1,13 +1,13 @@
 import { FilterValuesType, TodoListType } from "../App";
 import { v1 } from "uuid";
 
-export type RemoveTodolistActionType = ReturnType<typeof RemoveTodolistAC>;
+export type RemoveTodolistActionType = ReturnType<typeof removeTodolistAC>;
 
-export type AddTodolistActionType = ReturnType<typeof AddTodolistAC>;
+export type AddTodolistActionType = ReturnType<typeof addTodolistAC>;
 
-export type ChangeTodolistFilterActionType = ReturnType<typeof ChangeTodolistFilterAC>;
+export type ChangeTodolistFilterActionType = ReturnType<typeof changeTodolistFilterAC>;
 
-export type ChangeTodolistTitleActionType = ReturnType<typeof ChangeTodolistTitleAC>;
+export type ChangeTodolistTitleActionType = ReturnType<typeof changeTodolistTitleAC>;
 
 export type ActionType =
   | RemoveTodolistActionType
@@ -15,8 +15,10 @@ export type ActionType =
   | ChangeTodolistFilterActionType
   | ChangeTodolistTitleActionType;
 
+const intitialState: Array<TodoListType> = []
+
 export const todolistsReducer = (
-  todolists: TodoListType[],
+  todolists = intitialState,
   action: ActionType
 ): TodoListType[] => {
   switch (action.type) {
@@ -47,21 +49,21 @@ export const todolistsReducer = (
   }
 };
 
-export const RemoveTodolistAC = (id: string) => {
+export const removeTodolistAC = (id: string) => {
   return {
     type: "REMOVE-TODOLIST",
     payload: { todoListId: id },
   } as const;
 };
 
-export const AddTodolistAC = (title: string) => {
+export const addTodolistAC = (title: string) => {
   return {
     type: "ADD-TODOLIST",
     payload: { title: title, todolistId: v1() },
   } as const;
 };
 
-export const ChangeTodolistFilterAC = (
+export const changeTodolistFilterAC = (
   filter: FilterValuesType,
   todoListId: string
 ) => {
@@ -74,7 +76,7 @@ export const ChangeTodolistFilterAC = (
   } as const;
 };
 
-export const ChangeTodolistTitleAC = (title: string, todoListId: string) => {
+export const changeTodolistTitleAC = (title: string, todoListId: string) => {
   return {
     type: "CHANGE-TODOLIST-TITLE",
     payload: {
