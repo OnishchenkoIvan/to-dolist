@@ -1,9 +1,15 @@
 import React from "react";
 import { FilterValuesType } from "./App";
-import { Input } from "./components/Input";
-import { EditableSpan } from "./components/EditableSpan";
-import { Button, Checkbox, IconButton } from "@mui/material";
-import { Delete } from "@mui/icons-material";
+import { AddItemForm } from "./AddItemForm";
+import EditableSpan from "./EditableSpan";
+import {
+  Button,
+  ButtonGroup,
+  Checkbox,
+  IconButton,
+  ListItem,
+} from "@mui/material";
+import { DeleteForever } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { AppRootStateType } from "./state/store";
 import {
@@ -13,9 +19,9 @@ import {
   removeTaskAC,
 } from "./reducers/tasks-reducer";
 import {
-  changeTodolistFilterAC,
-  changeTodolistTitleAC,
-  removeTodolistAC,
+  changeTodoListFilterAC,
+  changeTodoListTitleAC,
+  removeTodoListAC,
 } from "./reducers/todolists-reducer";
 
 export type TaskType = {
@@ -42,24 +48,22 @@ const TodolistWithRedux = ({
   );
   const dispatch = useDispatch();
 
-  const changeTaskHandler = (taskID: string, currentTitle: string) => {
-    dispatch(changeTaskTitleAC(taskID, currentTitle, todolistId));
+  const changeTaskTitle = (taskId: string, title: string) => {
+    dispatch(changeTaskTitleAC(taskId, title, todolistId));
   };
 
-  const handlerFilterTask = (filter: FilterValuesType, todoListId: string) => {
-    return () => dispatch(changeTodolistFilterAC(filter, todoListId));
+  const addTask = (title: string) => {
+    dispatch(addTaskAC(title, todolistId));
   };
-
-  const addTaskHandler = (trimmedTitle: string) => {
-    dispatch(addTaskAC(trimmedTitle, todolistId));
+  const changeTodoListTitle = (title: string) => {
+    dispatch(changeTodoListTitleAC(title, todolistId));
+  };
+  const handlerCreator = (filter: FilterValuesType, todoListId: string) => {
+    return () => dispatch(changeTodoListFilterAC(filter, todoListId));
   };
 
   const removeTodolist = () => {
-    dispatch(removeTodolistAC(todolistId));
-  };
-
-  const editTodoListHandler = (currentTitle: string) => {
-    dispatch(changeTodolistTitleAC(currentTitle, todolistId));
+    dispatch(removeTodoListAC(todolistId));
   };
 
   if (filter === "active") {
@@ -72,9 +76,9 @@ const TodolistWithRedux = ({
   if (tasksForTodolist.length) {
     tasksItems = tasksForTodolist.map((task) => {
       return (
-        <li key={task.id} className={task.isDone ? "isDone" : ""}>
+        <ListItem key={task.id} className={task.isDone ? "isDone" : ""}>
           <Checkbox
-            // defaultChecked
+            style={{ color: "hotpink" }}
             onChange={(e) =>
               dispatch(
                 changeTaskStatusAC(task.id, e.currentTarget.checked, todolistId)
@@ -84,17 +88,17 @@ const TodolistWithRedux = ({
           />
           <EditableSpan
             title={task.title}
-            callBack={(newTitle: string) =>
-              changeTaskHandler(task.id, newTitle)
+            changeTitle={(newTitle: string) =>
+              changeTaskTitle(task.id, newTitle)
             }
           />
           <IconButton
-            aria-label={"delete"}
+            size="small"
             onClick={() => dispatch(removeTaskAC(task.id, todolistId))}
           >
-            <Delete />
+            <DeleteForever />
           </IconButton>
-        </li>
+        </ListItem>
       );
     });
   }
@@ -102,35 +106,37 @@ const TodolistWithRedux = ({
   return (
     <div>
       <h3>
-        <EditableSpan title={title} callBack={editTodoListHandler} />
-        <IconButton aria-label={"delete"} onClick={removeTodolist}>
-          <Delete />
+        <EditableSpan title={title} changeTitle={changeTodoListTitle} />
+        <IconButton size="small" color={"primary"} onClick={removeTodolist}>
+          <DeleteForever />
         </IconButton>
       </h3>
-      <Input callBack={addTaskHandler} />
+      <AddItemForm addItem={addTask} />
       <ul>{tasksItems}</ul>
       <div>
-        <Button
-          variant={filter === "all" ? "outlined" : "contained"}
-          color="success"
-          onClick={handlerFilterTask("all", todolistId)}
-        >
-          All
-        </Button>
-        <Button
-          variant={filter === "active" ? "outlined" : "contained"}
-          color="error"
-          onClick={handlerFilterTask("active", todolistId)}
-        >
-          Active
-        </Button>
-        <Button
-          variant={filter === "completed" ? "outlined" : "contained"}
-          color="secondary"
-          onClick={handlerFilterTask("completed", todolistId)}
-        >
-          Completed
-        </Button>
+        <ButtonGroup variant={"contained"} size={"small"} disableElevation>
+          <Button
+            style={{ marginRight: "3px" }}
+            color={filter === "all" ? "secondary" : "success"}
+            onClick={handlerCreator("all", todolistId)}
+          >
+            All
+          </Button>
+          <Button
+            style={{ marginRight: "3px" }}
+            color={filter === "active" ? "secondary" : "success"}
+            onClick={handlerCreator("active", todolistId)}
+          >
+            Active
+          </Button>
+          <Button
+            style={{ marginRight: "3px" }}
+            color={filter === "completed" ? "secondary" : "success"}
+            onClick={handlerCreator("completed", todolistId)}
+          >
+            Completed
+          </Button>
+        </ButtonGroup>
       </div>
     </div>
   );
